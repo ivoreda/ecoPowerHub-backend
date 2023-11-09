@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-80sy&w^j8856w3xbkq_a$qz8p%4n9=uv-v65icga#9a^tjr76h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://ecopowerhub-backend-production.up.railway.app/",
+                 "https://www.ecopowerhub-backend-production.up.railway.app/"]
 
 
 # Application definition
