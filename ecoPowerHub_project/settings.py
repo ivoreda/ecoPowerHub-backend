@@ -62,7 +62,7 @@ ROOT_URLCONF = 'ecoPowerHub_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,12 +81,29 @@ WSGI_APPLICATION = 'ecoPowerHub_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "postgres",
+        'USER': "postgres",
+        'PASSWORD': "3Gc1d125-E6d2*BaC3a-2*3Ab2AEA*bE",
+        'HOST': "viaduct.proxy.rlwy.net",
+        'PORT': 32453,
+        # 'OPTIONS': {
+        #     'sslmode': config('PROD_SSLMODE'),
+        # },
     }
 }
+
+
+
 
 
 # Password validation
@@ -136,3 +153,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+EMAIL_HOST = 'mail.the99keys.com'
+EMAIL_HOST_USER = 'ivor.e@the99keys.com'
+EMAIL_HOST_PASSWORD = '1Vor#ee!!'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

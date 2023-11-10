@@ -39,3 +39,47 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CustomUser
         exclude = ['password']
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for password change"""
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    class Meta:
+        model = models.CustomUser
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = models.PasswordRecoveryLogs
+        fields = ['email']
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()
+    new_password = serializers.CharField(required=True)
+
+    class Meta:
+        model = models.CustomUser
+
+
+class SendEmailVerificationCodeSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = models.EmailVerificationLogs
+        fields = ['email']
+
+
+class VerifyEmailWithCodeSerializer(serializers.ModelSerializer):
+    code = serializers.CharField()
+    email = serializers.EmailField()
+
+    class Meta:
+        model = models.EmailVerificationLogs
+        fields = ['code', 'email']
+

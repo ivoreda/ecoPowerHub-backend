@@ -33,4 +33,28 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['phone_number', 'username']
 
     def __str__(self) -> str:
-        return self.first_name + " " + self.last_name
+        return self.first_name + " " + self.last_name + " " + self.username
+
+
+class EmailVerificationLogs(models.Model):
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    isUsed = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.email
+
+
+class PasswordRecoveryLogs(models.Model):
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    isUsed = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.email
