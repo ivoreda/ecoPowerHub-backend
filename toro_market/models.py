@@ -51,6 +51,10 @@ class Project(models.Model):
     update_at = models.DateTimeField(auto_now=True)
 
 
+    def __str__(self) -> str:
+        return self.project_name
+
+
 """
 
 Instead of creating two image variable 
@@ -66,3 +70,7 @@ class ProjectImage(models.Model):
     project = models.ForeignKey(Project, 
                                 on_delete=models.CASCADE, blank=True, null=True)
     image = models.ImageField(upload_to="project_images/")
+
+
+    def __str__(self) -> str:
+        return self.project.project_name
