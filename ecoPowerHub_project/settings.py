@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     # Local
     'users',
-
+    'toro_market'
 ]
 
 MIDDLEWARE = [
