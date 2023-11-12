@@ -1,37 +1,61 @@
-from django.shortcuts import render
-from .models import Project
-from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import method_decorator
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import DetailView, ListView
+from django.shortcuts import render, get_object_or_404
 
-# Create your views here.
-def is_business_user(user):
-    return user.type == 'business'
+from rest_framework import permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response 
 
-# Class to listg all the energy projects available to be invested on 
-class Homeview(ListView):
-    model = Project 
+from .models import Project, ProjectImage
+from .serializers import ProjectSerializer, ProjectimageSerailizer
 
-@method_decorator(user_passes_test(is_business_user), name='dispatch')
-class ProjectCreateView(CreateView):
-    model = Project
-    fields = ['project_name', 'project_description', 'energy_capacity', 'energy_source', 'location', 'price']
-    template_name = ''
+# class to check if the user type is a business 
+class IsBusiness(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_business_user 
 
 
-class ProjectDetailView(DetailView):
-    model = Project 
-    template_name = ''
+# Class to list all the energy projects available to be invested on 
+class ProjectReadView(APIView):
+    def get(sefl, request):
+        projects = Project.objects.all()
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
 
-@method_decorator(user_passes_test(is_business_user), name='dispatch')
-class ProjectUpdateView(UpdateView):
-    model = Project 
-    fields = ['project_name', 'project_description', 'energy_capacity', 'energy_source', 'location', 'price']
-    template_name = ''
+# class to create a new energy project 
+class ProjectCreateView(APIView):
+   permission_classes = [permissions.IsAuthenticated, IsBusiness]
 
-@method_decorator(user_passes_test(is_business_user), name='dispatch')
-class ProjectDeleteView(DeleteView):
-    model = Project
-    template_name = ''
-    success_url = '/projects/'
+   def post(self, request):
+       serializer = ProjectSerializer(data=request.data)
+       if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED)
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
+# class to return details of one energy project
+class ProjectDetailView(APIView):
+    def get(self, request, pk):
+        project = get_object_or_404(project, pk=pk)
+        serializer = ProjectSerializer(project)
+        return Response(serializer.data)
+    
+#class to update a particular energy project 
+class projectUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsBusiness]
+
+    def put(self, request, pk):
+       project = get_object_or_404(Project, pk=pk)
+       serializer = ProjectSerializer(project, data=request.data)
+       if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data)
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# class to delete a particular energy project 
+class ProjectDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsBusiness] 
+
+    def delete(self, request, pk):
+       project = get_object_or_404(Project, pk=pk)
+       project.delete()
+       return Response(status=status.HTTP_204_NO_CONTENT)
+
