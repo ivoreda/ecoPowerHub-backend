@@ -4,8 +4,14 @@ from django.contrib.contenttypes.models import ContentType
 from uuid import uuid4
 
 # Create your models here.
+
 # create a model for energy product
 # one to one relationship to product from user/business
+
+# create a model for energy product
+# one to one relationship to product from user/business
+
+
 """
 id
 project name
@@ -28,6 +34,7 @@ only businesses can create energy product listing
 
 
 """
+
 
 
 # Defining energy sources
@@ -74,3 +81,5 @@ class ProjectImage(models.Model):
 
     def __str__(self) -> str:
         return self.project.project_name
+
+
