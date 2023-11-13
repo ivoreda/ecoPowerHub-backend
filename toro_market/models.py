@@ -3,54 +3,27 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from uuid import uuid4
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 # Create your models here.
-
-# create a model for energy product
-# one to one relationship to product from user/business
-
-# create a model for energy product
-# one to one relationship to product from user/business
-
-
-"""
-id
-project name
-project description
-energy capacity
-energy source
-location
-price
-image1 
-image2
-
-created_at
-updated_at
-"""
-
-
-"""
-only businesses can create energy product listing
-
-
-
-"""
-
-
 
 # Defining energy sources
 
 ENERGY_SOURCES = (
-    ("tRR", "transad"),
-    ('sff' ,'grests' )
+    ("Solar", "Solar"),
+    ('Petroleum' ,'Petroleum' )
 )
 
 
 class Project(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     project_name = models.CharField(max_length=20)
     project_description = models.TextField(blank=True, null=True)
     energy_capacity = models.CharField(max_length=20)
-    energy_source = models.CharField(choices=ENERGY_SOURCES, max_length=3)
+    energy_source = models.CharField(choices=ENERGY_SOURCES, max_length=20)
     location = models.CharField(max_length=50)
     price = models.FloatField()
 
@@ -74,6 +47,7 @@ To be able to use them i utilised the GenericForeignKey
 
 
 class ProjectImage(models.Model):
+    # image model should go away
     project = models.ForeignKey(Project, 
                                 on_delete=models.CASCADE, blank=True, null=True)
     image = models.ImageField(upload_to="project_images/")
