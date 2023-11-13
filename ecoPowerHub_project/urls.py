@@ -16,16 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from toro_market.views import ProjectCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path('', ProjectListView.as_view(), name='home'),
-    path('projects/create/', ProjectCreateView.as_view(), name='project-create'),
-    path('projects/<uuid:pk>/', ProjectDetailView.as_view(), name='project-detail'),
-    path('projects/update/<uuid:pk>/', ProjectUpdateView.as_view(), name='project-update'),
-    path('projects/delete/<uuid:pk>/', ProjectDeleteView.as_view(), name='project-delete'),
-        
+    path('marketplace/', include('toro_market.urls')),
 ]
