@@ -27,33 +27,12 @@ class Project(models.Model):
     location = models.CharField(max_length=50)
     price = models.FloatField()
 
+    image1 = models.ImageField(blank=True, null=True)
+    image2 = models.ImageField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self) -> str:
         return self.project_name
-
-
-"""
-
-Instead of creating two image variable 
-Define a new class to handle images 
-Assuming there is going to be a directory that stores the images 
-However using a UUIDFIELD won't allow form some ORM
-To be able to use them i utilised the GenericForeignKey 
-
-"""
-
-
-class ProjectImage(models.Model):
-    # image model should go away
-    project = models.ForeignKey(Project, 
-                                on_delete=models.CASCADE, blank=True, null=True)
-    image = models.ImageField(upload_to="project_images/")
-
-
-    def __str__(self) -> str:
-        return self.project.project_name
-
-
