@@ -4,17 +4,25 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response 
 
-from .models import Project, ProjectImage
-from .serializers import ProjectSerializer, ProjectimageSerailizer, CreateProjectSerializer
+from .models import Project
+from .serializers import ProjectSerializer, CreateProjectSerializer
 
 # class to check if the user type is a business 
 # there is an issue here
 class IsBusiness(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.user.user_type != "Business":
-            return Response({"status": False, "message": "You do not have permission to access this resource."})
-        # return request.user.user_type 
+    message = "You do not have permission to access this resource"
 
+    def has_permission(self, request, view):
+        return request.user.user_type == "Business"
+        
+
+class IsProjectOwner(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        
+        return obj.owner == request.user
 
 # Class to list all the energy projects available to be invested on 
 class ProjectListView(APIView):
@@ -25,6 +33,14 @@ class ProjectListView(APIView):
 
 # create view for getting user specific energy projects
 # projects = Project.objects.filter(user=request.user)
+
+class UserSpecificProjectView(APIView):
+    permissions_classes = [permissions.IsAuthenticated, IsBusiness]
+
+    def get(self, request):
+        projects = Project.objects.filter(user=request.user)
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
 
 
 # class to create a new energy project 
