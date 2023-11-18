@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import Project
 from .serializers import ProjectSerializer, CreateProjectSerializer
 
+
 # class to check if the user type is a business
 # there is an issue here
 
@@ -19,21 +20,18 @@ class IsBusiness(permissions.BasePermission):
 
 
 class IsProjectOwner(permissions.BasePermission):
+    message = "Ah shoot!, You can not edit this project"
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return obj.owner == request.user
+        return obj.user == request.user
 
 # Class to list all the energy projects available to be invested on
-
-
 class ProjectListView(APIView):
     def get(self, request):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
+
 
 # create view for getting user specific energy projects
 # projects = Project.objects.filter(user=request.user)
@@ -59,18 +57,18 @@ class ProjectCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # class to return details of one energy project
 
 
 class ProjectDetailView(APIView):
     def get(self, request, pk):
-        project = get_object_or_404(project, pk=pk)
+        project = get_object_or_404(Project, pk=pk)
         serializer = ProjectSerializer(project)
         return Response(serializer.data)
 
+
 # class to update a particular energy project
-
-
 class ProjectUpdateView(APIView):
     # add permission to make sure that the user updating is the user that created the project
     permission_classes = [permissions.IsAuthenticated, IsBusiness]
@@ -86,16 +84,17 @@ class ProjectUpdateView(APIView):
 # class to delete a particular energy project
 
 
-class ProjectDeleteView(APIView):
+class ProjectDeleteView(APIView, IsProjectOwner):
     # add permission to make sure that the user deleting is the user that created the project
-    permission_classes = [permissions.IsAuthenticated, IsBusiness]
+    permission_classes = [permissions.IsAuthenticated, IsBusiness, IsProjectOwner]
 
     def delete(self, request, pk):
-        project = get_object_or_404(Project, pk=pk)
-        project.delete()
-        return Response({"status": True, "message": "Project deleted successfully."}, status=status.HTTP_200_OK)
-
-
+         project = get_object_or_404(Project, pk=pk)
+         project.delete()
+         return Response(
+            {"status": True, "message": "Project deleted successfully."},
+            status=status.HTTP_200_OK,
+        )
 class BuyProjectView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

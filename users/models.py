@@ -36,7 +36,6 @@ class CustomUser(AbstractUser):
         return self.first_name + " " + self.last_name + " " + self.username
 
 
-
 class EmailVerificationLogs(models.Model):
     email = models.EmailField()
     code = models.CharField(max_length=6)
