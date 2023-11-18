@@ -13,7 +13,7 @@ User = get_user_model()
 
 ENERGY_SOURCES = (
     ("Solar", "Solar"),
-    ('Petroleum' ,'Petroleum' )
+    ('Petroleum', 'Petroleum')
 )
 
 
@@ -33,6 +33,44 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-
     def __str__(self) -> str:
         return self.project_name
+
+
+PAYMENT_STATUS = (('Pending', 'Pending'),
+                  ('Failed', 'Failed'),
+                  ('Done', 'Done'),)
+
+
+TRANSACTION_TYPES = (('Investment', 'Investment'),
+                     ('Project Payment', 'Project Payment'),)
+
+
+class Transaction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    status = models.CharField(choices=PAYMENT_STATUS,
+                              max_length=20, default='Pending')
+    transaction_type = models.CharField(
+        choices=TRANSACTION_TYPES, max_length=20, default='Project Payment')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.project
+
+
+class Investment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_investing')
+    business = models.ForeignKey(User, on_delete=models.CASCADE, related_name='business_invested_in')
+    percentage_of_business = models.IntegerField(default=0)
+
+    amount_invested = models.FloatField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name + " " + "investment"

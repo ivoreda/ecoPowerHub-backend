@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 
     # Local
     'users',
-    'toro_market'
+    'toro_market',
+    'eth_api',
 ]
 
 MIDDLEWARE = [

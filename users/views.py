@@ -13,11 +13,20 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from rest_framework import status
 
+from web3 import Web3
+from eth_api.constants import CONTRACT_ABI, CONTRACT_ADDRESS, ETHEREUM_NODE_URL, NUMBER_CONTRACT_ABI, NUMBER_CONTRACT_ADDRESS
+from eth_api.contracts import SmartContract
 
 
 User = get_user_model()
 
+contract = SmartContract(CONTRACT_ADDRESS, CONTRACT_ABI, ETHEREUM_NODE_URL)
+
+number_contract = SmartContract(
+    NUMBER_CONTRACT_ADDRESS, NUMBER_CONTRACT_ABI, ETHEREUM_NODE_URL)
+
 # Create your views here.
+
 
 class SignupView(APIView):
     serializer_class = serializers.SignupSerializer
@@ -30,6 +39,15 @@ class SignupView(APIView):
 
         user.username = email.split('@')[0]
         user.save()
+
+        if user.user_type == "Business":
+            try:
+                business = contract.create_company
+                print(business)
+                return Response({"status": True, "message": "business registered on toronet"})
+            except RuntimeError as e:
+                return JsonResponse({"error": str(e)})
+
         return Response({'status': True, 'message': 'user created successfully. Check your email for a verification code', 'data': serializer.data})
 
 
@@ -40,7 +58,17 @@ class GetUserView(APIView):
     def get(self, request):
         user = User.objects.get(id=request.user.id)
         serializer = self.serializer_class(request.user)
-        return Response({"status": True, "message": "user retrieved successfully", "data": serializer.data})
+
+        number = number_contract.check_fav_num()
+        print(number)
+
+        increased_number = number_contract.increase_fav_num()
+        print(increased_number)
+
+        decreased_number = number_contract.decrease_fav_num()
+        print(decreased_number)
+
+        return Response({"status": True, 'something': {"number": number, "increased number": increased_number, "decreased number": decreased_number}, "message": "user retrieved successfully", "data": serializer.data})
 
 
 class ChangePasswordView(APIView):
@@ -77,6 +105,7 @@ class ChangePasswordView(APIView):
             return Response(response)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ResetPasswordView(APIView):
     serializer_class = serializers.ResetPasswordSerializer
 
@@ -103,6 +132,7 @@ class ResetPasswordView(APIView):
                 return Response({"status": False, "message": "{code} does not match user code".format(code=code)})
             else:
                 return Response({"status": False, "message": "Something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ForgotPasswordView(APIView):
     serializer_class = serializers.ForgotPasswordSerializer
@@ -131,6 +161,7 @@ class ForgotPasswordView(APIView):
                 send_verification_code_to_email(
                     email, log.code, email_type='Password reset')
                 return Response({"status": True, "message": "password reset code sent to {email}".format(email=email)})
+
 
 class SendEmailVerificationCodeView(APIView):
     serializer_class = serializers.SendEmailVerificationCodeSerializer
@@ -163,6 +194,7 @@ class SendEmailVerificationCodeView(APIView):
                     return Response({"status": True, "message": f"Verification code sent to {user_email}"})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EmailVerificationView(APIView):
     serializer_class = serializers.VerifyEmailWithCodeSerializer
