@@ -9,9 +9,9 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.CustomUser
-        fields = ["first_name", "last_name", "email",
-                "phone_number", "user_type", "profile_picture", "business_worth",
-                "business_description", "available_shares", "total_shares",
+        fields = ["first_name", "last_name", "email","phone_number", 
+                "user_type", "profile_picture", "business_name", "business_worth",
+                "business_description", "available_shares", "total_shares", "share_price",
                 "buyable_shares", "buyable_shares_percentage", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 

@@ -25,7 +25,7 @@ class Project(models.Model):
     energy_capacity = models.CharField(max_length=20)
     energy_source = models.CharField(choices=ENERGY_SOURCES, max_length=20)
     location = models.CharField(max_length=50)
-    price = models.FloatField()
+    price = models.BigIntegerField()
 
     image1 = models.ImageField(blank=True, null=True)
     image2 = models.ImageField(blank=True, null=True)
@@ -67,7 +67,7 @@ class Investment(models.Model):
     business = models.ForeignKey(User, on_delete=models.CASCADE, related_name='business_invested_in')
     percentage_of_business = models.IntegerField(default=0)
 
-    amount_invested = models.FloatField()
+    amount_invested = models.BigIntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
