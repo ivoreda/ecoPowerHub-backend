@@ -71,7 +71,7 @@ class ProjectDetailView(APIView):
 # class to update a particular energy project
 class ProjectUpdateView(APIView):
     # add permission to make sure that the user updating is the user that created the project
-    permission_classes = [permissions.IsAuthenticated, IsBusiness]
+    permission_classes = [permissions.IsAuthenticated, IsBusiness, IsProjectOwner]
 
     def put(self, request, pk):
         project = get_object_or_404(Project, pk=pk)
