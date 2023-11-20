@@ -16,4 +16,6 @@ urlpatterns = [
          views.ProjectDeleteView.as_view(), name='project-delete'),
 
     path('projects/buy/<uuid:pk>/', views.BuyProjectView.as_view(), name='buy-project'),
+
+    path('projects/invest/', views.InvestView.as_view(), name='invest'),
 ]

@@ -22,9 +22,9 @@ class CustomUser(AbstractUser):
     business_name = models.CharField(max_length=50, blank=True, null=True)
     business_worth = models.BigIntegerField(blank=True, null=True)
     business_description = models.TextField(blank=True, null=True)
-    available_shares = models.BigIntegerField(blank=True, null=True)
+    available_shares = models.BigIntegerField(blank=True, null=True) # do calculation
     total_shares = models.BigIntegerField(blank=True, null=True)
-    buyable_shares = models.BigIntegerField(blank=True, null=True)
+    buyable_shares = models.BigIntegerField(blank=True, null=True) # do calculation
     buyable_shares_percentage = models.BigIntegerField(blank=True, null=True)
     share_price = models.BigIntegerField(blank=True, null=True)
 

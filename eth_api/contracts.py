@@ -12,9 +12,24 @@ class SmartContract:
                 str(name), int(totalCompanyValue), int(totalShares), int(sharePrice), int(buyableShares)).call()
             
             print(company)
+            # or event tracker here
             return company
         except Exception as e:
             raise RuntimeError(f"Error calling create_company: {str(e)}")
+
+    # write event tracker here
+    
+
+    # def invest(self, )
+    # invest
+    # buy stuff
+    # withdraw
+    # check balance
+
+
+
+
+        
 
     def check_fav_num(self):
         try:

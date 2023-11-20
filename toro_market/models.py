@@ -48,17 +48,23 @@ TRANSACTION_TYPES = (('Investment', 'Investment'),
 
 class Transaction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=True, null=True)
+    business = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(choices=PAYMENT_STATUS,
                               max_length=20, default='Pending')
     transaction_type = models.CharField(
         choices=TRANSACTION_TYPES, max_length=20, default='Project Payment')
+    
+    amount = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.project
+    # def __str__(self):
+    #     if self.project.project_name:
+    #         return self.project.project_name
+    #     else:
+    #         return self.business.business_name
 
 
 class Investment(models.Model):
@@ -67,7 +73,7 @@ class Investment(models.Model):
     business = models.ForeignKey(User, on_delete=models.CASCADE, related_name='business_invested_in')
     percentage_of_business = models.IntegerField(default=0)
 
-    amount_invested = models.BigIntegerField()
+    amount_invested = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)

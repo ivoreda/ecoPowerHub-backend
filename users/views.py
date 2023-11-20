@@ -39,22 +39,25 @@ class SignupView(APIView):
         user.username = email.split('@')[0]
         user.save()
 
+        code = generate_user_verification_code()
+        send_verification_code_to_email(email, code, "Email Verification")
+
         if user.user_type == "Business":
-            business_name = user.business_name
-            totalCompanyValue = user.business_worth
-            totalShares = user.total_shares
-            sharePrice = user.share_price
             buyableShares = user.total_shares * \
                 (user.buyable_shares_percentage / 100)
+            available_shares = user.total_shares * \
+                (user.buyable_shares_percentage / 100)
+            user.save()
 
-            try:
-                business = contract.create_company(
-                    str(business_name), int(totalCompanyValue), int(totalShares), int(sharePrice), int(buyableShares))
-                print(business)
-                return Response({"status": True, "message": "business registered on toronet"})
-            except Exception as e:
-                user.delete()
-                return Response({"error": str(e)})
+            return Response({"status": True, "message": "business registered successfully. Check your email for a verification code"}, status=status.HTTP_200_OK)
+            # try:
+            #     business = contract.create_company(
+            #         str(business_name), int(totalCompanyValue), int(totalShares), int(sharePrice), int(buyableShares))
+            #     print(business)
+            #     return Response({"status": True, "message": "business registered on toronet"})
+            # except Exception as e:
+            #     user.delete()
+            #     return Response({"error": str(e)})
                 
         return Response({'status': True, 'message': 'user created successfully. Check your email for a verification code', 'data': serializer.data})
 
@@ -66,20 +69,7 @@ class GetUserView(APIView):
     def get(self, request):
         user = User.objects.get(id=request.user.id)
         serializer = self.serializer_class(request.user)
-
-        number = number_contract.check_fav_num()
-        print(number)
-
-        increased_number = number_contract.increase_fav_num()
-        print(increased_number)
-
-        number_again = number_contract.check_fav_num()
-        print(number_again)
-
-        decreased_number = "not a number"  # number_contract.decrease_fav_num()
-        print(decreased_number)
-
-        return Response({"status": True, 'something': {"number": number, "increased number": increased_number, "decreased number": decreased_number}, "message": "user retrieved successfully", "data": serializer.data})
+        return Response({"status": True, "message": "user retrieved successfully", "data": serializer.data})
 
 
 class ChangePasswordView(APIView):
