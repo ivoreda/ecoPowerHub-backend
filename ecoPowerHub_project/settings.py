@@ -26,6 +26,11 @@ SECRET_KEY = 'django-insecure-80sy&w^j8856w3xbkq_a$qz8p%4n9=uv-v65icga#9a^tjr76h
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS="https://eco-power-hub-frontend.vercel.app"
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
 
 
 # Application definition
